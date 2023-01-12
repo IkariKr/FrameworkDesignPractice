@@ -11,14 +11,15 @@ namespace FrameworkDesign.Practice
         private Button btnAdd;
         private Button btnSub;
         private Text countText;
-        private CounterModel mCounterModel;
+        private ICounterModel mCounterModel;
         
         private void Start()
         {
             btnAdd = transform.Find("BtnAdd").GetComponent<Button>();
             btnSub = transform.Find("BtnSub").GetComponent<Button>();
             countText = transform.Find("CountText").GetComponent<Text>();
-            mCounterModel = CounterApp.Get<CounterModel>();
+            
+            mCounterModel = CounterApp.Get<ICounterModel>();
             
             btnAdd.onClick.AddListener(() =>
             {
@@ -48,9 +49,23 @@ namespace FrameworkDesign.Practice
         }
     }
 
-    public class CounterModel
+    public interface ICounterModel
     {
-        public BindableProperty<int> Count = new BindableProperty<int>()
+        BindableProperty<int> Count { get; }
+    }
+
+    public class CounterModel:ICounterModel
+    {
+        public CounterModel()
+        {
+            Count.Value = CounterApp.Get<IStorage>().LoadInt("COUNTER_VALUE", 0);
+            Count.OnValueChangedEvent += count =>
+            {
+                CounterApp.Get<IStorage>().SaveInt("COUNTER_VALUE", count);
+            };
+        }
+        
+        public BindableProperty<int> Count { get; } = new BindableProperty<int>()
         {
             Value = 0
         };

@@ -8,8 +8,8 @@ namespace FrameworkDesignPractice.Scripts.Command
     {
         public void Execute()
         {
-            PointGame.Get<GameModel>().killCount.Value++;
-            if (PointGame.Get<GameModel>().killCount.Value == 10)
+            PointGame.Get<IGameModel>().killCount.Value++;
+            if (PointGame.Get<IGameModel>().killCount.Value == 10)
             {
                 GamePassEvent.Trigger();
             }
