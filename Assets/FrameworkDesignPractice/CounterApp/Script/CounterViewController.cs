@@ -49,26 +49,27 @@ namespace FrameworkDesign.Practice
         }
     }
 
-    public interface ICounterModel
+    public interface ICounterModel : IModel
     {
         BindableProperty<int> Count { get; }
     }
 
     public class CounterModel:ICounterModel
     {
-        public CounterModel()
-        {
-            Count.Value = CounterApp.Get<IStorage>().LoadInt("COUNTER_VALUE", 0);
-            Count.OnValueChangedEvent += count =>
-            {
-                CounterApp.Get<IStorage>().SaveInt("COUNTER_VALUE", count);
-            };
-        }
-        
         public BindableProperty<int> Count { get; } = new BindableProperty<int>()
         {
             Value = 0
         };
+
+        public IArchitechiture Architechiture { get; set; }
+        public void Init()
+        {
+            Count.Value = Architechiture.GetUtility<IStorage>().LoadInt("COUNTER_VALUE", 0);
+            Count.OnValueChangedEvent += count =>
+            {
+                Architechiture.GetUtility<IStorage>().SaveInt("COUNTER_VALUE", count);
+            };
+        }
     }
 
  

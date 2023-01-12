@@ -7,9 +7,8 @@ namespace FrameworkDesign.Practice
     {
         protected override void Init()
         {
-            Register<ICounterModel>(new CounterModel());
             Register<IStorage>(new PlayerPrefsStorage());
-
+            RegisterModel<ICounterModel>(new CounterModel());
         }
     }
 }
