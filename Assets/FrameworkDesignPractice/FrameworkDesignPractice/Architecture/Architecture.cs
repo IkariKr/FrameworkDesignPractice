@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace FrameworkDesignPractice
     public interface IArchitechiture
     {
         void RegisterModel<T>(T model) where T : IModel;
+        void RegisterUtility<T>(T instance);
         T GetUtility<T>() where T : class;
     }
     
@@ -22,12 +24,17 @@ namespace FrameworkDesignPractice
 
         private List<IModel> mModels = new List<IModel>();
         
+        public static Action<T> OnRegisterPatch = architecture => { };
+        
+        
         static void MakeSureArchitecture()
         {
             if (mInstance == null)
             {
                 mInstance = new T();
                 mInstance.Init();
+                
+                OnRegisterPatch?.Invoke(mInstance);
                 
                 foreach (var VARIABLE in mInstance.mModels)
                 {
@@ -41,6 +48,7 @@ namespace FrameworkDesignPractice
 
 
 
+
         }
         
         private IOCContainer mContainer = new IOCContainer();
@@ -51,7 +59,7 @@ namespace FrameworkDesignPractice
             return mInstance.mContainer.Get<T1>();
         }
 
-        public void Register<T2>(T2 instance)
+        public static void Register<T2>(T2 instance)
         {
             MakeSureArchitecture();
             mInstance.mContainer.Register<T2>(instance);
@@ -70,6 +78,11 @@ namespace FrameworkDesignPractice
                 model.Init();
             }
             
+        }
+
+        public void RegisterUtility<T1>(T1 instance)
+        {
+            mContainer.Register<T1>(instance);
         }
 
         public T GetUtility<T>() where T : class

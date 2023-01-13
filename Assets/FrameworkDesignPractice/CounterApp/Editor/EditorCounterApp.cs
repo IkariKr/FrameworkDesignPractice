@@ -9,6 +9,11 @@ namespace FrameworkDesign.Practice
         [MenuItem("EditorCounterApp/Open")]
         static void Open()
         {
+            CounterApp.OnRegisterPatch += app =>
+            {
+                app.RegisterUtility<IStorage>(new EditorPrefsStorage());
+            };
+            
             var window = GetWindow<EditorCounterApp>();
             window.position = new Rect(100, 100, 400, 600);
             window.titleContent = new GUIContent(nameof(EditorCounterApp));
